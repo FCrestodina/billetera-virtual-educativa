@@ -177,7 +177,7 @@ export default function GenerarQRPage() {
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 flex flex-col items-center">
             {precioValido ? (
               <div ref={canvasWrap} className="bg-white p-3 rounded-2xl">
-                <QRCodeCanvas value={qrText} size={200} level="M" marginSize={2} />
+                <QRCodeCanvas value={qrText} size={220} level="H" marginSize={4} />
               </div>
             ) : (
               <div className="w-[224px] h-[224px] rounded-2xl bg-gray-50 flex items-center justify-center text-center text-gray-400 text-sm px-6">
