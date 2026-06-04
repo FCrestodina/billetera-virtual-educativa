@@ -19,8 +19,20 @@ interface ClassroomData {
   students: Student[];
 }
 
+// useParams() devuelve el segmento de ruta tal cual (url-encoded). Lo decodificamos
+// una vez para tener el nombre real del aula y re-encodear sin duplicar.
+function decodeParam(v?: string): string {
+  if (!v) return "";
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+}
+
 export default function DocentePanelPage() {
-  const { code } = useParams<{ code: string }>();
+  const params = useParams<{ code: string }>();
+  const code = decodeParam(params.code);
   const [data, setData] = useState<ClassroomData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
