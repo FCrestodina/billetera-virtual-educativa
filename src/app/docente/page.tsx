@@ -54,7 +54,7 @@ export default function DocentePage() {
     if (!res.ok) {
       add("error", data.error ?? "Error al crear el aula.");
     } else {
-      router.push(`/docente/${data.code}`);
+      router.push(`/docente/${encodeURIComponent(data.code)}`);
     }
     setLoading(false);
   }
@@ -117,20 +117,19 @@ export default function DocentePage() {
           <form onSubmit={handleCreateClassroom} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Código de aula
+                Nombre del aula
               </label>
               <input
                 type="text"
                 value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12))}
-                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xl font-bold text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
-                placeholder="7A"
-                maxLength={12}
+                onChange={(e) => setCode(e.target.value)}
+                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ej: 7° B, Feria 2025"
                 required
                 autoFocus
               />
               <p className="text-xs text-gray-400 mt-1 text-center">
-                Máx. 12 caracteres alfanuméricos (ej: 7A, 6B, FERIA1)
+                Nombre libre. Los estudiantes lo usan para entrar (ej: 7° B, Feria 2025).
               </p>
             </div>
 

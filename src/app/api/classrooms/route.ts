@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "PIN incorrecto." }, { status: 401 });
   }
 
-  const codeNorm = String(code).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12);
+  const codeNorm = String(code ?? "").trim();
   if (!codeNorm) {
-    return NextResponse.json({ error: "Código de aula inválido." }, { status: 400 });
+    return NextResponse.json({ error: "El nombre del aula no puede estar vacío." }, { status: 400 });
   }
 
   const balance = parseInt(initialBalance, 10);

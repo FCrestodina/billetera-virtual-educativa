@@ -5,7 +5,7 @@ import { eq, and } from "drizzle-orm";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  const codeNorm = code.toUpperCase();
+  const codeNorm = code.trim(); // Next ya decodifica el segmento de ruta.
 
   const [classroom] = await db
     .select()
@@ -39,7 +39,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ c
   await db
     .update(classrooms)
     .set({ active: false })
-    .where(eq(classrooms.code, code.toUpperCase()));
+    .where(eq(classrooms.code, code.trim()));
 
   return NextResponse.json({ ok: true });
 }

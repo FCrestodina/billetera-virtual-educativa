@@ -146,7 +146,7 @@ export default function BilleteraPage() {
         <div className="flex items-center gap-3">
           <span className="text-3xl">{av.emoji}</span>
           <div>
-            <p className="font-bold text-gray-900 text-sm leading-tight">{student.nickname}</p>
+            <p className="font-bold text-gray-900 text-sm leading-tight">{student.username}</p>
             <p className="text-xs text-gray-400">Billetera virtual</p>
           </div>
         </div>

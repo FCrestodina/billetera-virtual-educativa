@@ -27,11 +27,11 @@ export default function DocentePanelPage() {
   const [joinUrl, setJoinUrl] = useState("");
 
   useEffect(() => {
-    if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${code}`);
+    if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${encodeURIComponent(code)}`);
   }, [code]);
 
   const fetchData = useCallback(async () => {
-    const res = await fetch(`/api/classrooms/${code}`);
+    const res = await fetch(`/api/classrooms/${encodeURIComponent(code)}`);
     if (!res.ok) {
       const j = await res.json();
       setError(j.error);
@@ -84,8 +84,8 @@ export default function DocentePanelPage() {
       </Link>
 
       <div className="bg-blue-600 rounded-3xl p-6 text-white mb-6 shadow-lg">
-        <p className="text-blue-200 text-sm mb-1">Código del aula</p>
-        <p className="text-5xl font-black tracking-widest">{classroom.code}</p>
+        <p className="text-blue-200 text-sm mb-1">Nombre del aula</p>
+        <p className="text-3xl sm:text-4xl font-black tracking-tight break-words">{classroom.code}</p>
         <p className="text-blue-200 text-sm mt-3">
           Crédito inicial: <strong className="text-white">{formatPesos(classroom.initialBalance)}</strong>
         </p>
@@ -104,7 +104,7 @@ export default function DocentePanelPage() {
           <div className="w-[180px] h-[180px] bg-gray-50 rounded-2xl animate-pulse" />
         )}
         <p className="text-xs text-gray-400 mt-3">
-          Apuntá la cámara o ingresá el código <strong className="text-gray-600">{classroom.code}</strong> en{" "}
+          Apuntá la cámara o ingresá el aula <strong className="text-gray-600">{classroom.code}</strong> en{" "}
           <span className="font-mono">Soy estudiante</span>.
         </p>
       </div>
@@ -126,7 +126,7 @@ export default function DocentePanelPage() {
         <div className="text-center py-16 text-gray-400">
           <Users className="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p className="text-sm">Esperando que los estudiantes se unan...</p>
-          <p className="text-xs mt-1">Compartí el código <strong className="text-gray-600">{classroom.code}</strong></p>
+          <p className="text-xs mt-1">Compartí el aula <strong className="text-gray-600">{classroom.code}</strong> o el QR de arriba</p>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -138,7 +138,7 @@ export default function DocentePanelPage() {
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{av.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 truncate">{s.nickname}</p>
+                    <p className="font-semibold text-gray-900 truncate">{s.username}</p>
                     <div className="mt-1.5 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-green-400 rounded-full transition-all"

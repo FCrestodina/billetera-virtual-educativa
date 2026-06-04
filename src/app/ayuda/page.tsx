@@ -23,10 +23,10 @@ export default function AyudaPage() {
           {[
             'Tocá "Soy docente" en la pantalla inicial.',
             "Ingresá el PIN docente (pedíselo al referente técnico de tu escuela).",
-            "Escribí un código de aula corto: puede ser el grado y la sección (ej: 7A, 6B) o algo creativo para la actividad (FERIA1, CIUDAD2).",
+            "Escribí el nombre del aula: es libre, puede ser el grado y la sección (ej: 7° B) o algo de la actividad (Feria 2025, Ciudad Cashless).",
             "Definí el crédito inicial que recibirá cada estudiante. Recomendamos $10.000 para una actividad de 40 minutos.",
-            'Tocá "Crear aula". El código grande que aparece es el que van a usar tus estudiantes.',
-            "Proyectalo o dictalo en voz alta. Los chicos lo van a ingresar en sus dispositivos.",
+            'Tocá "Crear aula". El nombre que aparece, junto al QR, es lo que van a usar tus estudiantes para entrar.',
+            "Proyectá el QR o dictá el nombre del aula. Los chicos lo ingresan en sus dispositivos.",
           ].map((step, i) => (
             <li key={i} className="flex gap-3">
               <span className="flex-shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-700 font-bold text-sm flex items-center justify-center">
@@ -36,6 +36,27 @@ export default function AyudaPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-800 mb-4">
+          <GraduationCap className="w-6 h-6 text-blue-600" />
+          Cómo entran los estudiantes
+        </h2>
+        <ul className="space-y-2 text-sm text-gray-700">
+          {[
+            "Cada estudiante entra con un nombre de usuario y una contraseña, además del nombre del aula.",
+            "La contraseña debe tener entre 6 y 8 caracteres e incluir al menos una minúscula, una mayúscula y un número.",
+            "La primera vez que entran se crea su perfil automáticamente con ese usuario y contraseña.",
+            "Las veces siguientes entran con el mismo usuario y contraseña y recuperan su saldo e historial.",
+            "El usuario es por aula: el mismo nombre de usuario en dos aulas distintas son perfiles distintos.",
+          ].map((tip, i) => (
+            <li key={i} className="flex gap-2">
+              <span className="text-green-500 mt-0.5">✓</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="mb-10">

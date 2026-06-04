@@ -6,10 +6,11 @@ export type Classroom = {
   active: boolean;
 };
 
+// Estudiante tal como lo consume el cliente (sin el hash de la contraseña).
 export type Student = {
   id: string;
   classroomId: string;
-  nickname: string;
+  username: string;
   avatar: string;
   balance: number;
   joinedAt: number;

@@ -8,14 +8,19 @@ export const classrooms = pgTable("classrooms", {
   active: boolean("active").default(true).notNull(),
 });
 
-export const students = pgTable("students", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  classroomId: uuid("classroom_id").references(() => classrooms.id).notNull(),
-  nickname: text("nickname").notNull(),
-  avatar: text("avatar").notNull(),
-  balance: integer("balance").notNull(),
-  joinedAt: timestamp("joined_at").defaultNow().notNull(),
-});
+export const students = pgTable(
+  "students",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    classroomId: uuid("classroom_id").references(() => classrooms.id).notNull(),
+    username: text("username").notNull(),
+    passwordHash: text("password_hash").notNull(),
+    avatar: text("avatar").notNull(),
+    balance: integer("balance").notNull(),
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  },
+  (t) => [unique().on(t.classroomId, t.username)]
+);
 
 export const movements = pgTable("movements", {
   id: uuid("id").primaryKey().defaultRandom(),
