@@ -65,9 +65,18 @@ export default function AyudaPage() {
           Cómo generar los QR
         </h2>
         <p className="text-sm text-gray-600 mb-4">
-          Los QR se generan por fuera de la app, con cualquier generador online de QR de texto plano
-          (por ejemplo, <strong>qr.io</strong>, <strong>goqr.me</strong> o similar). El contenido del QR
-          es texto plano con el siguiente formato:
+          La forma más fácil es usar el <strong>generador integrado</strong>: completás los datos
+          y descargás el QR listo para imprimir o proyectar.
+        </p>
+        <Link
+          href="/generar"
+          className="inline-flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-white font-bold hover:bg-green-600 active:scale-95 transition-all mb-6"
+        >
+          <QrCode className="w-5 h-5" /> Abrir el generador de QR
+        </Link>
+        <p className="text-sm text-gray-600 mb-4">
+          También podés usar cualquier generador online de QR de texto plano. En todos los casos,
+          el contenido del QR es texto plano con este formato:
         </p>
 
         <div className="bg-gray-900 rounded-2xl p-4 font-mono text-sm text-green-400 mb-4 overflow-x-auto">

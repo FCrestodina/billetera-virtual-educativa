@@ -121,6 +121,13 @@ export default function DocentePanelPage() {
         </p>
       </div>
 
+      <Link
+        href="/generar"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-green-500 py-3 text-white font-bold hover:bg-green-600 active:scale-95 transition-all mb-6"
+      >
+        <QrCode className="w-5 h-5" /> Generar QR de productos
+      </Link>
+
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 text-gray-700">
           <Users className="w-5 h-5" />

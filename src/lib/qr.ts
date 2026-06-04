@@ -55,3 +55,28 @@ export function parseQR(raw: string): QRParseResult {
 export function calcularPromoKey(data: QRData): string {
   return `${data.comercio}|${data.producto}|${data.precio}|${data.promo}|${data.modo}|${data.tipo}`;
 }
+
+export interface QRFormFields {
+  comercio: string;
+  producto: string;
+  precio: string;
+  tipo: "normal" | "descuento" | "reintegro";
+  modo: "porcentaje" | "monto";
+  promo: string;
+  tope: string;
+}
+
+// Arma el texto plano del QR en el mismo formato que espera parseQR.
+export function buildQRText(f: QRFormFields): string {
+  const lines: string[] = [];
+  if (f.comercio.trim()) lines.push(`comercio=${f.comercio.trim()}`);
+  if (f.producto.trim()) lines.push(`producto=${f.producto.trim()}`);
+  lines.push(`precio=${f.precio}`);
+  if (f.tipo !== "normal") {
+    lines.push(`promo=${f.promo || "0"}`);
+    lines.push(`modo=${f.modo}`);
+    lines.push(`tipo=${f.tipo}`);
+  }
+  if (f.tope.trim()) lines.push(`tope=${f.tope.trim()}`);
+  return lines.join("\n");
+}
