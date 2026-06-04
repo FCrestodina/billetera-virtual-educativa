@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -15,6 +15,18 @@ export default function EstudiantePage() {
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState("astronauta");
   const [loading, setLoading] = useState(false);
+  const [codeFromQR, setCodeFromQR] = useState(false);
+
+  useEffect(() => {
+    const aula = new URLSearchParams(window.location.search).get("aula");
+    if (aula) {
+      const norm = aula.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12);
+      if (norm) {
+        setClassroomCode(norm);
+        setCodeFromQR(true);
+      }
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,8 +67,11 @@ export default function EstudiantePage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
             Código de aula
+            {codeFromQR && (
+              <span className="text-xs font-semibold text-green-600">✓ cargado desde el QR</span>
+            )}
           </label>
           <input
             type="text"
@@ -68,7 +83,7 @@ export default function EstudiantePage() {
             placeholder="7A"
             maxLength={12}
             required
-            autoFocus
+            autoFocus={!codeFromQR}
           />
         </div>
 

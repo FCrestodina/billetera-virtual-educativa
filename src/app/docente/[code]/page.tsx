@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, RefreshCw, Wallet } from "lucide-react";
+import { ArrowLeft, Users, RefreshCw, Wallet, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import type { Student } from "@/types";
 import { formatPesos } from "@/lib/format";
 import { getAvatar } from "@/components/avatars";
@@ -23,6 +24,11 @@ export default function DocentePanelPage() {
   const [data, setData] = useState<ClassroomData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [joinUrl, setJoinUrl] = useState("");
+
+  useEffect(() => {
+    if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${code}`);
+  }, [code]);
 
   const fetchData = useCallback(async () => {
     const res = await fetch(`/api/classrooms/${code}`);
@@ -82,6 +88,24 @@ export default function DocentePanelPage() {
         <p className="text-5xl font-black tracking-widest">{classroom.code}</p>
         <p className="text-blue-200 text-sm mt-3">
           Crédito inicial: <strong className="text-white">{formatPesos(classroom.initialBalance)}</strong>
+        </p>
+      </div>
+
+      <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-100 flex flex-col items-center text-center">
+        <div className="flex items-center gap-2 text-gray-700 mb-3">
+          <QrCode className="w-5 h-5 text-green-600" />
+          <span className="font-semibold text-sm">Escaneá para unirte al aula</span>
+        </div>
+        {joinUrl ? (
+          <div className="bg-white p-3 rounded-2xl border border-gray-100">
+            <QRCodeSVG value={joinUrl} size={180} level="M" marginSize={0} />
+          </div>
+        ) : (
+          <div className="w-[180px] h-[180px] bg-gray-50 rounded-2xl animate-pulse" />
+        )}
+        <p className="text-xs text-gray-400 mt-3">
+          Apuntá la cámara o ingresá el código <strong className="text-gray-600">{classroom.code}</strong> en{" "}
+          <span className="font-mono">Soy estudiante</span>.
         </p>
       </div>
 
