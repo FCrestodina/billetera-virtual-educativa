@@ -6,7 +6,7 @@ Simulador educativo de billetera virtual / dinero digital para 6° y 7° grado �
 
 ## Stack
 
-- **Next.js 15** (App Router) + TypeScript + Tailwind CSS
+- **Next.js 16** (App Router) + TypeScript + Tailwind CSS
 - **Railway PostgreSQL** + Drizzle ORM
 - **@zxing/browser** — lectura de QR desde cámara
 - **Framer Motion** + Lucide React
