@@ -236,6 +236,11 @@ export default function GenerarQRPage() {
           box-shadow: 0 0 0 2px #22c55e;
           border-color: transparent;
         }
+        /* styled-jsx le gana en especificidad a la utilidad pl-7 de Tailwind:
+           sin esta regla el valor queda tapado por el "$" de los campos con prefijo. */
+        .input.pl-7 {
+          padding-left: 1.75rem;
+        }
       `}</style>
     </main>
   );
