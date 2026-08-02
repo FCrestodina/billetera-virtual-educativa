@@ -104,7 +104,7 @@ export function PaymentModal({
 
             {qrData.tope !== undefined && !limitReached && usosRestantes !== undefined && (
               <p className="text-xs text-gray-500 text-center">
-                Podés usar esta promo {usosRestantes} vez{usosRestantes !== 1 ? "es" : ""} más.
+                Podés usar esta promo {usosRestantes} {usosRestantes === 1 ? "vez" : "veces"} más.
               </p>
             )}
 
