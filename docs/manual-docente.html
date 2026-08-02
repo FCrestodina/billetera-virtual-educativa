@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Manual del docente — Billetera Virtual Educativa</title>
+<style>
+  @page { size: A4; margin: 15mm 14mm; }
+  *{box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif;color:#27303f;margin:0;font-size:11.5px;line-height:1.5}
+  h1,h2,h3{color:#111827;margin:0;line-height:1.2}
+  .brand{color:#2563eb}
+  .logo{width:54px;height:54px;border-radius:14px;background:#2563eb;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
+  .cover{display:flex;flex-direction:column;justify-content:center;height:245mm;page-break-after:always}
+  .cover h1{font-size:38px;margin-top:18px}
+  .cover .sub{font-size:15px;color:#6b7280;margin-top:10px;max-width:82%}
+  .pill{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:5px 14px;font-weight:700;font-size:12px}
+  .pill.green{background:#dcfce7;color:#15803d}
+  .toc{columns:2;font-size:12px;color:#4b5563}
+  .toc li{margin:5px 0}
+  .feat{border:1px solid #e5e7eb;border-radius:14px;padding:14px 16px;margin:0 0 14px;background:#fbfcfe;page-break-inside:avoid}
+  .feat .h{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .feat .ic{flex:0 0 30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .feat h3{font-size:14px}
+  .feat ul,.feat ol{margin:6px 0 0;padding-left:18px}
+  .feat li{margin:3px 0;color:#4b5563}
+  .note{border-left:4px solid #2563eb;background:#eff6ff;padding:9px 13px;border-radius:0 8px 8px 0;margin:10px 0}
+  .tip{border-left:4px solid #22c55e;background:#f0fdf4;padding:9px 13px;border-radius:0 8px 8px 0;margin:10px 0}
+  .warn{border-left:4px solid #f59e0b;background:#fffbeb;padding:9px 13px;border-radius:0 8px 8px 0;margin:10px 0}
+  .imp{border-left:4px solid #ef4444;background:#fef2f2;padding:9px 13px;border-radius:0 8px 8px 0;margin:10px 0}
+  .figcap{font-size:10px;color:#9ca3af;text-align:center;margin-top:3px;font-style:italic}
+  .foot{margin-top:24px;text-align:center;font-size:10px;color:#b0b6c0}
+  h2.sec{font-size:20px;margin:0 0 12px}
+  table{width:100%;border-collapse:collapse;margin:6px 0;font-size:11px}
+  th,td{border:1px solid #e5e7eb;padding:5px 8px;text-align:left;vertical-align:top}
+  th{background:#f3f4f6}
+  code,pre{font-family:"Cascadia Mono",Consolas,monospace}
+  pre{background:#111827;color:#4ade80;border-radius:10px;padding:10px 12px;font-size:10.5px;margin:6px 0;white-space:pre-wrap}
+  b.k{color:#1d4ed8}
+  .url{font-family:Consolas,monospace;background:#eef2ff;color:#3730a3;padding:1px 5px;border-radius:4px}
+  .grid2{display:flex;gap:12px}
+  .grid2>div{flex:1}
+  .chk li{list-style:none;margin:4px 0;color:#374151}
+  .chk{padding-left:2px}
+  figure{margin:10px 0 2px}
+  .shot{border:1px solid #e2e5ea;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .shot img{display:block;width:100%;height:auto}
+  .shots{display:flex;gap:10px;align-items:flex-start;margin:10px 0 2px;page-break-inside:avoid}
+  .shots figure{margin:0;flex:0 0 auto;width:48mm}
+  .shots figure.wide{width:112mm}
+  /* Recorte del blanco sobrante de cada captura (alto útil / ancho real) */
+  .c-home{aspect-ratio:430/700}
+  .c-pin{aspect-ratio:430/560}
+  .c-aula{aspect-ratio:430/650}
+  .c-panel{aspect-ratio:672/950}
+  .c-gen{aspect-ratio:672/890}
+  .c-entrar{aspect-ratio:384/960}
+  .c-saldo{aspect-ratio:384/620}
+  .c-full{aspect-ratio:430/1000}
+  .c-hist{aspect-ratio:384/610}
+  .pin{border:2px dashed #2563eb;background:#eff6ff;border-radius:12px;padding:10px 14px;margin:10px 0;text-align:center}
+  .pin .val{font-family:Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:3px;color:#1d4ed8;display:block;margin-top:2px}
+</style></head>
+<body>
+
+<div class="cover">
+  <div>
+    <span class="logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+        <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+      </svg>
+    </span>
+    <span style="font-size:30px;font-weight:800;letter-spacing:-1px;margin-left:10px">Billetera Virtual Educativa</span>
+  </div>
+  <h1>Manual del <span class="brand">docente</span></h1>
+  <p class="sub">Cómo armar la actividad de dinero digital en el aula: crear el aula, generar los QR de los comercios y acompañar a los estudiantes durante la simulación.</p>
+  <div style="margin-top:24px">
+    <span class="pill">Guía completa paso a paso</span>
+    <span class="pill green" style="margin-left:6px">6° y 7° grado</span>
+  </div>
+  <div class="foot" style="margin-top:40px;text-align:left">Buenos Aires Aprende · Simulación educativa — no es dinero real</div>
+</div>
+
+<section>
+  <h2 class="sec">¿Qué vas a encontrar?</h2>
+  <ol class="toc">
+    <li>Qué es (y qué no es) esta app</li>
+    <li>Antes de la clase: checklist</li>
+    <li>Crear el aula</li>
+    <li>Que entren los estudiantes</li>
+    <li>El panel en vivo</li>
+    <li>Generar los QR de los comercios</li>
+    <li>Los 5 tipos de operación</li>
+    <li>Armar los cartelitos e imprimirlos</li>
+    <li>Qué ve y qué hace el estudiante</li>
+    <li>Cuando algo sale mal</li>
+    <li>Cerrar la actividad y reflexionar</li>
+    <li>Preguntas frecuentes</li>
+  </ol>
+
+  <div class="feat" style="margin-top:14px">
+    <div class="h"><span class="ic">💡</span><h3>1 · Qué es (y qué no es) esta app</h3></div>
+    <ul>
+      <li>Es un <b>simulador</b> de billetera virtual: cada estudiante recibe un crédito ficticio y "paga" escaneando los QR de los comercios que vos armás.</li>
+      <li><b>No es dinero real</b>, no hay pasarela de pago, no se conecta con ningún banco ni con Mercado Pago.</li>
+      <li><b>No se piden datos personales.</b> Cada chico entra con un <b>apodo</b> (usuario), una contraseña de la actividad y un avatar. Nada más.</li>
+      <li>Se usa desde el <b>celular o la tablet</b> de cada estudiante (para escanear con la cámara) y desde <b>tu compu o el proyector</b> para el panel del aula.</li>
+    </ul>
+    <div class="note"><b>La dirección de la app:</b> <span class="url">billetera-virtual-educativa-production.up.railway.app</span> — la misma para vos y para los chicos.</div>
+    <figure class="shots">
+      <figure><div class="shot c-home"><img src="img/01-home.png" alt="Pantalla inicial de la app"></div>
+        <figcaption class="figcap">Pantalla inicial: de un lado entrás vos, del otro los chicos.</figcaption></figure>
+      <figure><div class="shot c-saldo"><img src="img/07-billetera-saldo.png" alt="Billetera del estudiante"></div>
+        <figcaption class="figcap">Lo que ve un estudiante al entrar: su saldo y el botón para pagar.</figcaption></figure>
+    </figure>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">✅</span><h3>2 · Antes de la clase: checklist</h3></div>
+    <ul class="chk">
+      <li>☐ Tenés a mano el <b>PIN docente</b> (está acá abajo).</li>
+      <li>☐ Decidiste el <b>crédito inicial</b> por estudiante (sugerencia: <b>$10.000</b> para una actividad de 40 minutos).</li>
+      <li>☐ Armaste e <b>imprimiste los QR</b> de los comercios (punto 6 y 8) y los probaste escaneando con un celular.</li>
+      <li>☐ Los chicos saben que van a necesitar <b>inventar un usuario y una contraseña</b> y recordarlos durante la clase.</li>
+      <li>☐ Abriste la app unos minutos antes: la primera carga del día puede tardar unos segundos.</li>
+    </ul>
+    <div class="pin">
+      <span style="font-size:11px;color:#1e40af;font-weight:700;letter-spacing:.5px">PIN DOCENTE</span>
+      <span class="val">ba2026</span>
+      <span style="font-size:10px;color:#3b5bdb">Se ingresa una sola vez, al entrar por “Soy docente”. Es el mismo para todas las docentes.</span>
+    </div>
+    <div class="imp"><b>Importante — la cámara:</b> el escáner solo funciona si entran por la dirección de arriba (que es segura, <b>https</b>). Si les pasás una dirección que empiece con <code>http://192.168...</code> o <code>localhost</code>, el celular <b>no deja abrir la cámara</b>.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🏫</span><h3>3 · Crear el aula</h3></div>
+    <ol>
+      <li>Entrá a la app y tocá <b>“Soy docente”</b>.</li>
+      <li>Ingresá el <b>PIN docente</b> (<b class="k">ba2026</b>) y tocá <b>Continuar</b>. Si te equivocás, avisa “PIN incorrecto”.</li>
+      <li>Escribí el <b>nombre del aula</b>. Es texto libre: <b class="k">7° B</b>, <b class="k">Feria 2026</b>, <b class="k">Ciudad Cashless</b>. Ese nombre es <b>lo que los chicos van a escribir para entrar</b>.</li>
+      <li>Poné el <b>crédito inicial por estudiante</b> (número entero mayor a cero).</li>
+      <li>Tocá <b>Crear aula</b> y quedás parado en el panel del aula.</li>
+    </ol>
+    <div class="warn"><b>Ojo con los nombres repetidos:</b> si ya existe un aula activa con ese nombre, la app avisa <i>“Ya existe un aula activa con ese código”</i>. Sumale la fecha o el turno para que sea único: <b class="k">7°B 12-08</b>, <b class="k">7°B tarde</b>.</div>
+    <div class="tip"><b>Consejo:</b> el nombre lo van a tipear chicos de 11 años en un celular. Cuanto más corto y sin símbolos raros, mejor.</div>
+    <figure class="shots">
+      <figure><div class="shot c-pin"><img src="img/02-docente-pin.png" alt="Pantalla de acceso docente con el PIN"></div>
+        <figcaption class="figcap">Paso 2: el PIN docente.</figcaption></figure>
+      <figure><div class="shot c-aula"><img src="img/03-crear-aula.png" alt="Formulario para crear el aula"></div>
+        <figcaption class="figcap">Pasos 3 y 4: nombre del aula y crédito inicial.</figcaption></figure>
+    </figure>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">📲</span><h3>4 · Que entren los estudiantes</h3></div>
+    <ul>
+      <li>Dos caminos: <b>escanear el QR “Escaneá para unirte al aula”</b> que aparece en tu panel (proyectalo), o entrar a la app, tocar <b>“Soy estudiante”</b> y <b>escribir el nombre del aula</b>.</li>
+      <li>Cada estudiante completa: <b>usuario</b> (hasta 20 caracteres), <b>contraseña</b> y <b>avatar</b>.</li>
+      <li>La <b>contraseña</b> tiene que cumplir 4 reglas —la pantalla las va marcando en verde—:</li>
+    </ul>
+    <table>
+      <tr><th>Regla</th><th>Ejemplo válido</th><th>Ejemplo que falla</th></tr>
+      <tr><td>Entre 6 y 8 caracteres</td><td rowspan="4"><b class="k">Dino2026</b><br><b class="k">Sol12Ab</b></td><td><code>Ab1</code> (muy corta)</td></tr>
+      <tr><td>Al menos una minúscula</td><td><code>DINO2026</code></td></tr>
+      <tr><td>Al menos una mayúscula</td><td><code>dino2026</code></td></tr>
+      <tr><td>Al menos un número</td><td><code>DinoVerde</code></td></tr>
+    </table>
+    <ul>
+      <li><b>La primera vez</b> que entran se les crea el perfil con el crédito inicial. <b>Las veces siguientes</b> entran con el mismo usuario y contraseña y recuperan su saldo y su historial.</li>
+      <li>El usuario es <b>por aula</b>: el mismo apodo en dos aulas distintas son dos perfiles distintos, cada uno con su propio saldo.</li>
+      <li>El <b>avatar</b> se elige solo al crear el perfil; después ya no se cambia.</li>
+    </ul>
+    <figure class="shots">
+      <figure><div class="shot c-entrar"><img src="img/06-estudiante-entrar.png" alt="Formulario de ingreso del estudiante"></div>
+        <figcaption class="figcap">Cuando entran por el QR, el nombre del aula ya viene cargado. Las 4 reglas de la contraseña se marcan en verde a medida que se cumplen.</figcaption></figure>
+    </figure>
+    <div class="imp"><b>No hay “olvidé mi contraseña”.</b> Si un chico no la recuerda, la salida es entrar con un <b>usuario nuevo</b> — pero arranca de cero con el crédito inicial y pierde el historial anterior. Pediles que la anoten en la carpeta apenas la crean.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">📊</span><h3>5 · El panel en vivo</h3></div>
+    <ul>
+      <li>Es la pantalla que se abre al crear el aula. <b>Proyectala</b>: se actualiza sola cada <b>5 segundos</b>, no hace falta refrescar.</li>
+      <li>Arriba: el <b>nombre del aula</b> en grande y el <b>crédito inicial</b>.</li>
+      <li>El <b>QR para unirse</b>, para que los chicos entren sin tipear.</li>
+      <li>Un botón directo a <b>Generar QR de productos</b>.</li>
+      <li>La <b>lista de estudiantes conectados</b>: avatar, apodo, saldo actual y una barra que muestra qué porcentaje del crédito inicial le queda.</li>
+    </ul>
+    <figure class="shots">
+      <figure class="wide"><div class="shot c-panel"><img src="img/04-panel-docente.png" alt="Panel del aula con el QR y los estudiantes conectados"></div>
+        <figcaption class="figcap">El panel real del aula: el QR para unirse y los tres estudiantes con su saldo. La barra verde muestra cuánto les queda del crédito inicial.</figcaption></figure>
+    </figure>
+    <div class="warn"><b>Lo que el panel no hace:</b> no podés editar saldos, borrar movimientos ni sacar a un estudiante. Es una pantalla de <b>seguimiento</b>. Si algo se desvirtúa, se resuelve creando un aula nueva.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🔳</span><h3>6 · Generar los QR de los comercios</h3></div>
+    <ul>
+      <li>Desde el panel del aula (o desde <b>Ayuda</b>) entrá a <b>Generar QR de productos</b>.</li>
+      <li>Completás: <b>comercio</b>, <b>producto</b>, <b>precio</b>, <b>tipo de operación</b>, el <b>beneficio</b> y, si querés, un <b>tope de usos por estudiante</b>.</li>
+      <li>El QR se dibuja al instante y lo bajás con <b>Descargar QR (PNG)</b>. Se genera <b>dentro de la app</b>, sin mandar nada a ningún servicio externo.</li>
+      <li>Repetís uno por cada producto de la feria. Un puesto puede tener varios QR (uno por producto).</li>
+    </ul>
+    <figure class="shots">
+      <figure class="wide"><div class="shot c-gen"><img src="img/05-generador-qr.png" alt="Generador de QR de la app"></div>
+        <figcaption class="figcap">El generador: a la izquierda cargás los datos, a la derecha aparece el QR y el texto exacto que lleva adentro.</figcaption></figure>
+    </figure>
+    <div class="tip"><b>Probalos antes de la clase:</b> escaneá cada QR con un celular. Si el lector muestra el texto <code>comercio=… precio=…</code>, está bien armado.</div>
+    <p style="margin:10px 0 4px"><b>¿Qué tiene adentro el QR?</b> Texto plano, una línea por dato. Si preferís usar un generador online de QR de texto, copiá exactamente este formato:</p>
+    <pre>comercio=Kiosco Escolar
+producto=Alfajor
+precio=2500
+promo=20
+modo=porcentaje
+tipo=descuento
+tope=2</pre>
+    <table>
+      <tr><th>Campo</th><th>¿Obligatorio?</th><th>Qué hace</th></tr>
+      <tr><td><code>precio</code></td><td><b style="color:#dc2626">Sí</b></td><td>Valor en pesos simulados. Número entero, sin puntos ni centavos.</td></tr>
+      <tr><td><code>comercio</code></td><td>No</td><td>Nombre del puesto (texto libre). Si falta, dice “Comercio”.</td></tr>
+      <tr><td><code>producto</code></td><td>No</td><td>Nombre del producto (texto libre). Si falta, dice “Producto”.</td></tr>
+      <tr><td><code>tipo</code></td><td>No</td><td><code>normal</code> · <code>descuento</code> · <code>reintegro</code>. Por defecto <code>normal</code>.</td></tr>
+      <tr><td><code>modo</code></td><td>No</td><td><code>porcentaje</code> o <code>monto</code>. Por defecto <code>porcentaje</code>.</td></tr>
+      <tr><td><code>promo</code></td><td>No</td><td>El valor del beneficio: el % o los $ según el modo.</td></tr>
+      <tr><td><code>tope</code></td><td>No</td><td>Cuántas veces puede usar <b>esa promo</b> cada estudiante.</td></tr>
+    </table>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🧮</span><h3>7 · Los 5 tipos de operación</h3></div>
+    <table>
+      <tr><th>Tipo</th><th>Qué pasa</th><th>Ejemplo</th></tr>
+      <tr><td><b>Pago simple</b><br><code>tipo=normal</code></td><td>Se descuenta el precio, sin beneficio.</td><td>Viaje en colectivo $1.200 → paga <b>$1.200</b></td></tr>
+      <tr><td><b>Descuento %</b></td><td>Paga el precio menos el porcentaje.</td><td>Cartulina $3.000 con 20% → paga <b>$2.400</b></td></tr>
+      <tr><td><b>Descuento $</b></td><td>Paga el precio menos un monto fijo.</td><td>Combo $5.000 menos $1.000 → paga <b>$4.000</b></td></tr>
+      <tr><td><b>Reintegro %</b></td><td>Paga todo y le <b>vuelve</b> un porcentaje al saldo.</td><td>Merienda $4.000 con 25% → paga $4.000 y recupera <b>$1.000</b></td></tr>
+      <tr><td><b>Reintegro $</b></td><td>Paga todo y le vuelve un monto fijo.</td><td>Entrada $8.000 con $1.500 → paga $8.000 y recupera <b>$1.500</b></td></tr>
+    </table>
+    <p style="margin:8px 0 4px"><b>Sobre el tope de usos.</b> Sirve para promos “solo 2 veces por persona”. Tres cosas que conviene saber:</p>
+    <ul>
+      <li>El tope <b>solo cuenta en descuento y reintegro</b>. En un pago simple no limita nada.</li>
+      <li>Se cuenta por <b>combinación exacta</b> de comercio + producto + precio + beneficio. Si cambiás una sola letra del producto, para la app es otra promo y el contador arranca de nuevo.</li>
+      <li>Cuando un chico llega al tope, la app le ofrece <b>pagar sin la promo</b> (precio completo) o <b>cancelar</b>. Es un buen momento pedagógico.</li>
+    </ul>
+    <div class="warn"><b>Cuidado al cargar un reintegro por monto fijo:</b> si el reintegro es mayor que el precio, el estudiante <b>termina con más plata de la que gastó</b>. Salvo que lo busques a propósito, revisá que el monto sea menor al precio.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🖨️</span><h3>8 · Armar los cartelitos e imprimirlos</h3></div>
+    <ul>
+      <li><b>Tamaño:</b> mínimo <b>5 × 5 cm</b> el QR. Si el puesto va a tener fila, mejor 8 × 8 cm.</li>
+      <li><b>Contraste:</b> negro sobre blanco. Nada de logos, dibujos ni texto encima del código, y dejale el <b>margen blanco</b> alrededor (el generador ya lo agrega).</li>
+      <li><b>Debajo del QR</b>, en letra grande: <b>comercio</b>, <b>producto</b>, <b>precio</b> y la promo escrita en castellano (“20% de descuento”, “te devolvemos $1.500”). Que puedan anticipar la cuenta <b>antes</b> de escanear es parte de la actividad.</li>
+      <li><b>Una hoja por puesto</b> funciona mejor que muchos QR juntos: evita que el celular lea el de al lado.</li>
+      <li>Si los vas a reusar en varios cursos, <b>plastificalos</b>. Y guardá los PNG: se reimprimen igual.</li>
+      <li>También se pueden <b>proyectar</b> en el pizarrón, de a uno por vez.</li>
+    </ul>
+    <figure style="margin:8px 0 2px">
+      <svg viewBox="0 0 520 120" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Arial">
+        <rect x="150" y="4" width="220" height="112" rx="10" fill="#fff" stroke="#d1d5db"/>
+        <rect x="212" y="14" width="52" height="52" fill="#111827"/>
+        <rect x="218" y="20" width="12" height="12" fill="#fff"/><rect x="246" y="20" width="12" height="12" fill="#fff"/>
+        <rect x="218" y="48" width="12" height="12" fill="#fff"/><rect x="238" y="40" width="8" height="8" fill="#fff"/>
+        <text x="278" y="30" font-size="9" fill="#9ca3af">← el QR, mínimo 5×5 cm</text>
+        <text x="260" y="84" font-size="13" font-weight="800" text-anchor="middle" fill="#111827">Combo merienda</text>
+        <text x="260" y="97" font-size="10" text-anchor="middle" fill="#6b7280">Kiosco Escolar</text>
+        <text x="260" y="111" font-size="11" font-weight="700" text-anchor="middle" fill="#15803d">$5.000 · $1.000 de descuento</text>
+      </svg>
+      <figcaption class="figcap">Así se ve un cartelito completo: código arriba, la información legible abajo.</figcaption>
+    </figure>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">👦</span><h3>9 · Qué ve y qué hace el estudiante</h3></div>
+    <ol>
+      <li>Entra al aula y ve su <b>saldo</b> en grande, con la aclaración de que es una simulación.</li>
+      <li>Toca <b>“Pagar con QR”</b> → se abre la cámara → apunta al cartelito.</li>
+      <li>Antes de descontar nada, la app le muestra una <b>ventana con el detalle</b>: producto, precio, descuento o reintegro que aplica, y <b>con cuánto saldo queda</b>. Ahí <b>confirma o cancela</b>.</li>
+      <li>Al confirmar ve el aviso <i>“¡Pago realizado!”</i> con el saldo nuevo, y su saldo aparece actualizado en tu panel.</li>
+      <li>En la pestaña <b>Historial</b> tiene todos sus movimientos con precio, beneficio y saldo resultante.</li>
+    </ol>
+    <figure class="shots">
+      <figure><div class="shot c-full"><img src="img/08-escaneando.png" alt="Pantalla de la cámara buscando el QR"></div>
+        <figcaption class="figcap">Paso 2: así se abre la cámara. El recuadro blanco es la guía para encuadrar el QR.</figcaption></figure>
+      <figure><div class="shot c-full"><img src="img/09-confirmar-pago.png" alt="Ventana de confirmación del pago"></div>
+        <figcaption class="figcap">Paso 3: el detalle, antes de descontar.</figcaption></figure>
+      <figure><div class="shot c-hist"><img src="img/10-historial.png" alt="Historial de movimientos del estudiante"></div>
+        <figcaption class="figcap">Paso 5: el historial.</figcaption></figure>
+    </figure>
+    <div class="tip"><b>El paso 3 es el corazón de la actividad:</b> pediles que <b>calculen mentalmente</b> el resultado antes de tocar confirmar y después lo comparen con lo que muestra la pantalla.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🛟</span><h3>10 · Cuando algo sale mal</h3></div>
+    <table>
+      <tr><th>Lo que ven en pantalla</th><th>Qué pasó / qué hacer</th></tr>
+      <tr><td><i>“Necesitamos acceso a la cámara para leer el QR”</i></td><td>El celular pidió permiso y se rechazó. Volver a entrar y tocar <b>Permitir</b>; si no aparece, revisar los permisos del navegador.</td></tr>
+      <tr><td><i>“No se pudo iniciar la cámara”</i></td><td>Casi siempre entraron por una dirección insegura. Que usen el enlace oficial (https) del punto 1.</td></tr>
+      <tr><td><i>“El precio del QR no es válido”</i></td><td>El QR se armó sin precio o con un precio no numérico. Rehacerlo desde el generador.</td></tr>
+      <tr><td><i>“No se pudo leer la promoción”</i></td><td>El tipo o el modo están mal escritos (ej. <code>tipo=descuentos</code>). Ojo si lo escribiste a mano.</td></tr>
+      <tr><td><i>“Saldo insuficiente…”</i></td><td>No le alcanza. <b>No se descuenta nada.</b> Usalo como disparador: ¿qué resigna? ¿busca una promo mejor?</td></tr>
+      <tr><td><i>“Alcanzaste el límite de esta promoción”</i></td><td>Llegó al tope de usos. Puede pagar el precio completo o cancelar.</td></tr>
+      <tr><td><i>“No encontramos esa aula…”</i></td><td>El nombre del aula está mal escrito (fijate en espacios, tildes y el símbolo <code>°</code>) o el aula se creó con otro nombre.</td></tr>
+      <tr><td><i>“Usuario o contraseña incorrectos”</i></td><td>Ese apodo ya existe en el aula con otra contraseña. Que pruebe de nuevo o elija otro apodo.</td></tr>
+      <tr><td>La cámara no engancha el código</td><td>Más luz, menos reflejo (los plastificados brillan), pulso firme y el QR entero dentro del recuadro.</td></tr>
+    </table>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">🎯</span><h3>11 · Cerrar la actividad y reflexionar</h3></div>
+    <ul>
+      <li>Antes de terminar, pediles que abran el <b>Historial</b> y calculen <b>cuánto gastaron en total</b> y cuánto les quedó.</li>
+      <li>Preguntas que funcionan: ¿qué promo <b>convino más</b>? ¿Un 20% de descuento es siempre mejor que $1.000 de descuento? ¿Y un reintegro es lo mismo que un descuento, si te quedaste sin plata en el momento?</li>
+      <li>Los que se quedaron sin saldo son el mejor caso para discutir <b>prioridades</b> y <b>presupuesto</b>.</li>
+      <li>Comparen el <b>panel proyectado</b>: por qué dos chicos con el mismo crédito inicial terminaron tan distinto.</li>
+    </ul>
+    <div class="note"><b>Para la próxima clase:</b> creá un aula con otro nombre. Los saldos e historiales del aula anterior quedan guardados, pero un aula nueva arranca a todos de cero con el crédito inicial.</div>
+  </div>
+
+  <div class="feat">
+    <div class="h"><span class="ic">❓</span><h3>12 · Preguntas frecuentes</h3></div>
+    <ul>
+      <li><b>¿Cuántos estudiantes entran en un aula?</b> No hay límite fijado. Un curso entero funciona sin problema.</li>
+      <li><b>¿Necesitan instalar algo?</b> No. Se abre en el navegador del celular. Tampoco hace falta que tengan cuenta de mail.</li>
+      <li><b>¿Y si un chico no tiene celular?</b> Que trabajen de a dos, o que uno escanee y el otro haga la cuenta. La discusión en parejas suele rendir más.</li>
+      <li><b>¿Se puede quedar con saldo negativo?</b> No: si no le alcanza, la operación se rechaza.</li>
+      <li><b>¿Puedo darle más crédito a alguien durante la clase?</b> No desde la app. El crédito se define al crear el aula. Un “bono” se puede simular con un QR de <b>reintegro</b> de precio bajo y reintegro alto.</li>
+      <li><b>¿Puedo reusar el mismo nombre de aula otro día?</b> Mientras el aula anterior siga activa, no. Agregale la fecha.</li>
+      <li><b>¿El PIN es distinto para cada docente?</b> No: es uno solo para toda la escuela (<b class="k">ba2026</b>). Se usa únicamente para crear el aula; los chicos no lo necesitan nunca. Si hiciera falta cambiarlo, lo cambia el referente técnico.</li>
+      <li><b>¿Se guardan datos de los chicos?</b> Solo el apodo que inventaron, el avatar, el saldo y los movimientos de la simulación. Nada de nombre real, mail ni documento.</li>
+      <li><b>¿Y si se corta internet?</b> Sin conexión no se puede escanear ni actualizar saldos. Tené a mano una versión en papel de la consigna por las dudas.</li>
+    </ul>
+  </div>
+
+  <div class="foot">Billetera Virtual Educativa · Manual del docente · Buenos Aires Aprende · Simulación educativa, no es dinero real</div>
+</section>
+
+</body></html>
