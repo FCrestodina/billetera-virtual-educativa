@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, RefreshCw, Wallet, QrCode, Pencil } from "lucide-react";
+import { ArrowLeft, Users, RefreshCw, Wallet, QrCode, Pencil, Archive } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import type { Student } from "@/types";
 import { formatPesos } from "@/lib/format";
@@ -33,6 +33,7 @@ function decodeParam(v?: string): string {
 
 export default function DocentePanelPage() {
   const params = useParams<{ code: string }>();
+  const router = useRouter();
   const code = decodeParam(params.code);
   const [data, setData] = useState<ClassroomData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +48,12 @@ export default function DocentePanelPage() {
   const [nuevoInicial, setNuevoInicial] = useState("");
   const [ajuste, setAjuste] = useState("");
   const [guardando, setGuardando] = useState(false);
+
+  // Cierre del aula: pide el PIN de nuevo porque es la acción que saca a los
+  // estudiantes del aula.
+  const [cerrando, setCerrando] = useState(false);
+  const [pinCierre, setPinCierre] = useState("");
+  const [enviandoCierre, setEnviandoCierre] = useState(false);
 
   useEffect(() => {
     if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${encodeURIComponent(code)}`);
@@ -100,6 +107,26 @@ export default function DocentePanelPage() {
       await fetchData();
     }
     setGuardando(false);
+  }
+
+  async function handleCerrar(e: React.FormEvent) {
+    e.preventDefault();
+    setEnviandoCierre(true);
+
+    const res = await fetch(`/api/classrooms/${encodeURIComponent(code)}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pin: pinCierre }),
+    });
+
+    if (!res.ok) {
+      const json = await res.json();
+      add("error", json.error ?? "No se pudo cerrar el aula.");
+      setEnviandoCierre(false);
+      return;
+    }
+    // No se apaga `enviandoCierre`: la navegación desmonta la página.
+    router.push("/docente");
   }
 
   if (error) {
@@ -306,6 +333,65 @@ export default function DocentePanelPage() {
           })}
         </ul>
       )}
+
+      <div className="mt-10 pt-6 border-t border-gray-100">
+        {cerrando ? (
+          <form onSubmit={handleCerrar} className="space-y-4">
+            <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
+              <p className="font-semibold mb-1">¿Cerrar el aula {classroom.code}?</p>
+              <p className="text-amber-800">
+                {students.length === 0
+                  ? "Todavía no entró ningún estudiante. "
+                  : students.length === 1
+                    ? "El estudiante que está en el aula deja de poder entrar. "
+                    : `Los ${students.length} estudiantes dejan de poder entrar. `}
+                Los saldos y el historial quedan guardados, y el nombre del aula se libera para volver a
+                usarlo. No se puede reabrir desde la app.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">PIN docente</label>
+              <input
+                type="password"
+                value={pinCierre}
+                onChange={(e) => setPinCierre(e.target.value)}
+                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-lg font-mono tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="······"
+                required
+                autoFocus
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={enviandoCierre || !pinCierre}
+                className="flex-1 rounded-2xl bg-red-600 py-3 text-white font-bold hover:bg-red-700 active:scale-95 transition-all disabled:opacity-50"
+              >
+                {enviandoCierre ? "Cerrando..." : "Sí, cerrar el aula"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCerrando(false);
+                  setPinCierre("");
+                }}
+                className="rounded-2xl border border-gray-200 px-5 py-3 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        ) : (
+          <button
+            onClick={() => setCerrando(true)}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-red-200 py-3 text-red-600 font-semibold hover:bg-red-50 transition-colors"
+          >
+            <Archive className="w-4 h-4" /> Cerrar aula
+          </button>
+        )}
+      </div>
 
       <ToastContainer toasts={toasts} onRemove={remove} />
     </main>

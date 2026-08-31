@@ -25,7 +25,12 @@ export async function POST(req: NextRequest) {
     if (existing[0].active) {
       return NextResponse.json({ error: "Ya existe un aula activa con ese código." }, { status: 409 });
     }
-    await db.delete(classrooms).where(eq(classrooms.code, codeNorm));
+    // El aula cerrada libera el código renombrándose, no borrándose: `students` y
+    // `movements` la referencian sin ON DELETE CASCADE, así que un DELETE explota por
+    // FK apenas el aula haya tenido un estudiante. Renombrar también conserva el
+    // historial de la cursada anterior en vez de tirarlo.
+    const archivado = `${codeNorm} (cerrada ${new Date().toISOString().slice(0, 10)} · ${existing[0].id})`;
+    await db.update(classrooms).set({ code: archivado }).where(eq(classrooms.id, existing[0].id));
   }
 
   const [classroom] = await db

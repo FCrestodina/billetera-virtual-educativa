@@ -1,13 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { db } from "@/lib/db";
 import { POST } from "@/app/api/classrooms/route";
-import { PATCH } from "@/app/api/classrooms/[code]/route";
+import { PATCH, DELETE } from "@/app/api/classrooms/[code]/route";
 import {
   postRequest,
   patchRequest,
   mockSelect,
   mockInsert,
-  mockDelete,
   mockUpdateReturning,
 } from "./api-test-utils";
 
@@ -23,6 +22,7 @@ describe("POST /api/classrooms", () => {
     process.env.TEACHER_PIN = PIN;
     vi.mocked(db.select).mockReset();
     vi.mocked(db.insert).mockReset();
+    vi.mocked(db.update).mockReset();
     vi.mocked(db.delete).mockReset();
   });
 
@@ -55,18 +55,29 @@ describe("POST /api/classrooms", () => {
     expect(res.status).toBe(409);
   });
 
-  it("reactiva un aula existente pero inactiva con el mismo código", async () => {
+  it("archiva el aula inactiva en vez de borrarla y reusa el código", async () => {
+    let renombrada: { code?: string } | undefined;
     vi.mocked(db.select).mockReturnValueOnce(
       mockSelect([{ id: "c1", code: "5A", active: false, initialBalance: 500 }]) as ReturnType<typeof db.select>
     );
-    vi.mocked(db.delete).mockReturnValueOnce(mockDelete() as ReturnType<typeof db.delete>);
+    vi.mocked(db.update).mockReturnValueOnce({
+      set: (v: { code?: string }) => {
+        renombrada = v;
+        return { where: () => Promise.resolve(undefined) };
+      },
+    } as unknown as ReturnType<typeof db.update>);
     vi.mocked(db.insert).mockReturnValueOnce(
       mockInsert([{ id: "c2", code: "5A", active: true, initialBalance: 2000 }]) as ReturnType<typeof db.insert>
     );
+
     const req = postRequest(URL, { pin: PIN, code: "5A", initialBalance: "2000" });
     const res = await POST(req);
+
     expect(res.status).toBe(201);
-    expect(db.delete).toHaveBeenCalled();
+    // Un DELETE reventaría por FK si el aula vieja tuvo estudiantes (BUG-009).
+    expect(db.delete).not.toHaveBeenCalled();
+    expect(renombrada?.code).toContain("5A (cerrada ");
+    expect(renombrada?.code).toContain("c1");
   });
 
   it("crea el aula exitosamente", async () => {
@@ -178,5 +189,43 @@ describe("PATCH /api/classrooms/[code]", () => {
     expect(body.classroom.initialBalance).toBe(50000);
     expect(body.studentsUpdated).toBe(1);
     expect(db.update).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("DELETE /api/classrooms/[code]", () => {
+  beforeEach(() => {
+    process.env.TEACHER_PIN = PIN;
+    vi.mocked(db.update).mockReset();
+  });
+
+  it("rechaza con PIN incorrecto y no toca el aula", async () => {
+    const req = new Request(PATCH_URL, {
+      method: "DELETE",
+      body: JSON.stringify({ pin: "0000" }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await DELETE(req as never, { params });
+    expect(res.status).toBe(401);
+    expect(db.update).not.toHaveBeenCalled();
+  });
+
+  it("da de baja el aula con el PIN correcto", async () => {
+    let baja: { active?: boolean } | undefined;
+    vi.mocked(db.update).mockReturnValueOnce({
+      set: (v: { active?: boolean }) => {
+        baja = v;
+        return { where: () => Promise.resolve(undefined) };
+      },
+    } as unknown as ReturnType<typeof db.update>);
+
+    const req = new Request(PATCH_URL, {
+      method: "DELETE",
+      body: JSON.stringify({ pin: PIN }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await DELETE(req as never, { params });
+
+    expect(res.status).toBe(200);
+    expect(baja).toEqual({ active: false });
   });
 });
