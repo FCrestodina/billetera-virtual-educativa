@@ -1,7 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { db } from "@/lib/db";
 import { POST } from "@/app/api/classrooms/route";
-import { postRequest, mockSelect, mockInsert, mockDelete } from "./api-test-utils";
+import { PATCH } from "@/app/api/classrooms/[code]/route";
+import {
+  postRequest,
+  patchRequest,
+  mockSelect,
+  mockInsert,
+  mockDelete,
+  mockUpdateReturning,
+} from "./api-test-utils";
 
 vi.mock("@/lib/db", () => ({
   db: { select: vi.fn(), insert: vi.fn(), update: vi.fn(), delete: vi.fn() },
@@ -72,5 +80,103 @@ describe("POST /api/classrooms", () => {
     const body = await res.json();
     expect(body.code).toBe("5A");
     expect(body.initialBalance).toBe(1000);
+  });
+});
+
+const PATCH_URL = "http://localhost/api/classrooms/5A";
+const params = Promise.resolve({ code: "5A" });
+const AULA = { id: "c1", code: "5A", active: true, initialBalance: 1000 };
+
+describe("PATCH /api/classrooms/[code]", () => {
+  beforeEach(() => {
+    process.env.TEACHER_PIN = PIN;
+    vi.mocked(db.select).mockReset();
+    vi.mocked(db.update).mockReset();
+  });
+
+  it("rechaza con PIN incorrecto", async () => {
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: "0000", initialBalance: "5000" }), {
+      params,
+    });
+    expect(res.status).toBe(401);
+    expect(db.select).not.toHaveBeenCalled();
+  });
+
+  it("rechaza si no viene ningún cambio", async () => {
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN }), { params });
+    expect(res.status).toBe(400);
+  });
+
+  it("rechaza un crédito inicial <= 0", async () => {
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, initialBalance: "0" }), { params });
+    expect(res.status).toBe(400);
+  });
+
+  it("rechaza un ajuste de saldo igual a cero", async () => {
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, balanceAdjustment: "0" }), {
+      params,
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("devuelve 404 si el aula no existe o está inactiva", async () => {
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, initialBalance: "5000" }), {
+      params,
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("cambia el crédito inicial sin tocar los saldos actuales", async () => {
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.update).mockReturnValueOnce(
+      mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as ReturnType<typeof db.update>
+    );
+
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, initialBalance: "50000" }), {
+      params,
+    });
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.classroom.initialBalance).toBe(50000);
+    expect(body.studentsUpdated).toBe(0);
+    expect(db.update).toHaveBeenCalledTimes(1);
+  });
+
+  it("suma un monto a los saldos de los estudiantes del aula", async () => {
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.update).mockReturnValueOnce(
+      mockUpdateReturning([{ id: "s1" }, { id: "s2" }]) as ReturnType<typeof db.update>
+    );
+
+    const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, balanceAdjustment: "40000" }), {
+      params,
+    });
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.studentsUpdated).toBe(2);
+    expect(body.classroom.initialBalance).toBe(1000);
+  });
+
+  it("hace los dos cambios en la misma llamada", async () => {
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.update)
+      .mockReturnValueOnce(
+        mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as ReturnType<typeof db.update>
+      )
+      .mockReturnValueOnce(mockUpdateReturning([{ id: "s1" }]) as ReturnType<typeof db.update>);
+
+    const res = await PATCH(
+      patchRequest(PATCH_URL, { pin: PIN, initialBalance: "50000", balanceAdjustment: "40000" }),
+      { params }
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.classroom.initialBalance).toBe(50000);
+    expect(body.studentsUpdated).toBe(1);
+    expect(db.update).toHaveBeenCalledTimes(2);
   });
 });

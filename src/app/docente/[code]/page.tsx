@@ -3,11 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, RefreshCw, Wallet, QrCode } from "lucide-react";
+import { ArrowLeft, Users, RefreshCw, Wallet, QrCode, Pencil } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import type { Student } from "@/types";
 import { formatPesos } from "@/lib/format";
 import { getAvatar } from "@/components/avatars";
+import { ToastContainer, useToast } from "@/components/Toast";
 
 interface ClassroomData {
   classroom: {
@@ -37,6 +38,15 @@ export default function DocentePanelPage() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [joinUrl, setJoinUrl] = useState("");
+  const { toasts, add, remove } = useToast();
+
+  // Formulario de ajuste de créditos (el panel no guarda el PIN: lo pide de nuevo,
+  // igual que el borrado de aula).
+  const [editando, setEditando] = useState(false);
+  const [pin, setPin] = useState("");
+  const [nuevoInicial, setNuevoInicial] = useState("");
+  const [ajuste, setAjuste] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${encodeURIComponent(code)}`);
@@ -59,6 +69,38 @@ export default function DocentePanelPage() {
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, [fetchData]);
+
+  async function handleAjuste(e: React.FormEvent) {
+    e.preventDefault();
+    setGuardando(true);
+
+    const body: Record<string, string> = { pin };
+    if (nuevoInicial.trim()) body.initialBalance = nuevoInicial.trim();
+    if (ajuste.trim()) body.balanceAdjustment = ajuste.trim();
+
+    const res = await fetch(`/api/classrooms/${encodeURIComponent(code)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json();
+
+    if (!res.ok) {
+      add("error", json.error ?? "No se pudo guardar el cambio.");
+    } else {
+      add(
+        "success",
+        json.studentsUpdated > 0
+          ? `Listo. Saldos actualizados: ${json.studentsUpdated}.`
+          : "Crédito inicial actualizado."
+      );
+      setEditando(false);
+      setPin("");
+      setAjuste("");
+      await fetchData();
+    }
+    setGuardando(false);
+  }
 
   if (error) {
     return (
@@ -101,7 +143,93 @@ export default function DocentePanelPage() {
         <p className="text-blue-200 text-sm mt-3">
           Crédito inicial: <strong className="text-white">{formatPesos(classroom.initialBalance)}</strong>
         </p>
+        <button
+          onClick={() => {
+            setNuevoInicial(String(classroom.initialBalance));
+            setAjuste("");
+            setEditando(!editando);
+          }}
+          className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold hover:bg-white/25 active:scale-95 transition-all"
+        >
+          <Pencil className="w-4 h-4" /> Ajustar créditos
+        </button>
       </div>
+
+      {editando && (
+        <form
+          onSubmit={handleAjuste}
+          className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-100 space-y-4"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">PIN docente</label>
+            <input
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-lg font-mono tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="······"
+              required
+              autoFocus
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Crédito inicial
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">$</span>
+              <input
+                type="number"
+                value={nuevoInicial}
+                onChange={(e) => setNuevoInicial(e.target.value)}
+                className="w-full rounded-2xl border border-gray-200 bg-white pl-8 pr-4 py-3 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                min={1}
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Con el que arrancan los estudiantes que se sumen a partir de ahora.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Sumar a los saldos actuales
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">$</span>
+              <input
+                type="number"
+                value={ajuste}
+                onChange={(e) => setAjuste(e.target.value)}
+                className="w-full rounded-2xl border border-gray-200 bg-white pl-8 pr-4 py-3 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="0"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Le suma ese monto a los {students.length} estudiante{students.length !== 1 ? "s" : ""} que ya
+              están en el aula. Vacío = no toca los saldos. Con un número negativo, resta (nunca baja de $0).
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={guardando || !pin || (!nuevoInicial.trim() && !ajuste.trim())}
+              className="flex-1 rounded-2xl bg-blue-600 py-3 text-white font-bold hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-50"
+            >
+              {guardando ? "Guardando..." : "Guardar"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditando(false)}
+              className="rounded-2xl border border-gray-200 px-5 py-3 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      )}
 
       <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-100 flex flex-col items-center text-center">
         <div className="flex items-center gap-2 text-gray-700 mb-3">
@@ -178,6 +306,8 @@ export default function DocentePanelPage() {
           })}
         </ul>
       )}
+
+      <ToastContainer toasts={toasts} onRemove={remove} />
     </main>
   );
 }

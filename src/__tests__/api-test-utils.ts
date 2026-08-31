@@ -14,6 +14,14 @@ export function postRequest(url: string, body: unknown): NextRequest {
   });
 }
 
+export function patchRequest(url: string, body: unknown): NextRequest {
+  return new NextRequest(url, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+    headers: { "content-type": "application/json" },
+  });
+}
+
 export function mockSelect(rows: unknown[]) {
   return { from: () => ({ where: () => Promise.resolve(rows) }) };
 }
@@ -24,6 +32,10 @@ export function mockInsert(rows: unknown[]) {
 
 export function mockUpdate() {
   return { set: () => ({ where: () => Promise.resolve(undefined) }) };
+}
+
+export function mockUpdateReturning(rows: unknown[]) {
+  return { set: () => ({ where: () => ({ returning: () => Promise.resolve(rows) }) }) };
 }
 
 export function mockDelete() {
