@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Users, RefreshCw, Wallet, QrCode, Pencil, Archive } from "lucide-react";
@@ -31,6 +31,11 @@ function decodeParam(v?: string): string {
   }
 }
 
+// useSyncExternalStore pide un subscribe; aca el valor ("estamos en el cliente")
+// nunca cambia despues de hidratar, asi que no hay a que suscribirse. Vive fuera
+// del componente para que la referencia sea estable entre renders.
+const subscribeNoop = () => () => {};
+
 export default function DocentePanelPage() {
   const params = useParams<{ code: string }>();
   const router = useRouter();
@@ -38,8 +43,20 @@ export default function DocentePanelPage() {
   const [data, setData] = useState<ClassroomData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [joinUrl, setJoinUrl] = useState("");
   const { toasts, add, remove } = useToast();
+
+  // joinUrl depende de window.location.origin, que no existe en el server.
+  // Antes se resolvia con un useEffect + setState, que es exactamente lo que
+  // prohibe react-hooks/set-state-in-effect. useSyncExternalStore es la forma
+  // sancionada de leer un valor que difiere entre server y cliente: React usa
+  // el snapshot del server durante la hidratacion y recien despues el del
+  // cliente, asi que no hay mismatch. Ya no hace falta estado: joinUrl se
+  // deriva en el render.
+  const isClient = useSyncExternalStore(subscribeNoop, () => true, () => false);
+  const joinUrl =
+    isClient && code
+      ? `${window.location.origin}/estudiante?aula=${encodeURIComponent(code)}`
+      : "";
 
   // Formulario de ajuste de créditos (el panel no guarda el PIN: lo pide de nuevo,
   // igual que el borrado de aula).
@@ -55,10 +72,6 @@ export default function DocentePanelPage() {
   const [pinCierre, setPinCierre] = useState("");
   const [enviandoCierre, setEnviandoCierre] = useState(false);
 
-  useEffect(() => {
-    if (code) setJoinUrl(`${window.location.origin}/estudiante?aula=${encodeURIComponent(code)}`);
-  }, [code]);
-
   const fetchData = useCallback(async () => {
     const res = await fetch(`/api/classrooms/${encodeURIComponent(code)}`);
     if (!res.ok) {
@@ -71,8 +84,13 @@ export default function DocentePanelPage() {
     setLastUpdated(new Date());
   }, [code]);
 
+  // Idem billetera: la primera carga va en una IIFE async porque llamar a
+  // fetchData() suelto en el cuerpo del effect dispara set-state-in-effect.
+  // Pasarla como callback a setInterval no lo dispara.
   useEffect(() => {
-    fetchData();
+    void (async () => {
+      await fetchData();
+    })();
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, [fetchData]);

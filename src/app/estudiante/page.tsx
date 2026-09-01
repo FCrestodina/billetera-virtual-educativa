@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Users, ArrowLeft, Eye, EyeOff, Check, X } from "lucide-react";
 import Link from "next/link";
 import { AvatarPicker } from "@/components/AvatarPicker";
@@ -14,25 +14,24 @@ const rules = [
   { label: "Un número", test: (p: string) => /[0-9]/.test(p) },
 ];
 
-export default function EstudiantePage() {
+function EstudianteForm() {
   const router = useRouter();
   const { toasts, add, remove } = useToast();
 
-  const [classroomCode, setClassroomCode] = useState("");
+  // El aula puede venir precargada por el QR del docente (?aula=...). Antes se
+  // leia de window.location dentro de un useEffect y se volcaba con setState,
+  // que es lo que prohibe react-hooks/set-state-in-effect. useSearchParams lo
+  // da en el render, sin tocar window (funciona igual en el server), asi que
+  // el codigo entra directo como valor inicial y codeFromQR se deriva.
+  const aulaDelQR = useSearchParams().get("aula") ?? "";
+
+  const [classroomCode, setClassroomCode] = useState(aulaDelQR);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState("astronauta");
   const [loading, setLoading] = useState(false);
-  const [codeFromQR, setCodeFromQR] = useState(false);
-
-  useEffect(() => {
-    const aula = new URLSearchParams(window.location.search).get("aula");
-    if (aula) {
-      setClassroomCode(aula);
-      setCodeFromQR(true);
-    }
-  }, []);
+  const codeFromQR = aulaDelQR !== "";
 
   const passwordOk = rules.every((r) => r.test(password));
 
@@ -182,5 +181,21 @@ export default function EstudiantePage() {
 
       <ToastContainer toasts={toasts} onRemove={remove} />
     </main>
+  );
+}
+
+// useSearchParams obliga a un limite de Suspense: sin el, Next no puede
+// prerenderizar la ruta y el build falla.
+export default function EstudiantePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center text-gray-400">
+          Cargando...
+        </main>
+      }
+    >
+      <EstudianteForm />
+    </Suspense>
   );
 }

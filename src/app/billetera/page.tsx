@@ -51,13 +51,19 @@ export default function BilleteraPage() {
     if (res.ok) setMovements(await res.json());
   }, [studentId]);
 
+  // La carga va dentro de una IIFE async a proposito: llamar directo a
+  // fetchStudent()/fetchMovements() desde el cuerpo del effect dispara
+  // react-hooks/set-state-in-effect, que no distingue que el setState de esas
+  // funciones ocurre despues del await. Promise.all mantiene los dos pedidos
+  // en paralelo, como cuando se llamaban sueltos.
   useEffect(() => {
     if (!studentId) {
       router.replace("/estudiante");
       return;
     }
-    fetchStudent();
-    fetchMovements();
+    void (async () => {
+      await Promise.all([fetchStudent(), fetchMovements()]);
+    })();
   }, [studentId, fetchStudent, fetchMovements, router]);
 
   async function handleQRScan(text: string) {
