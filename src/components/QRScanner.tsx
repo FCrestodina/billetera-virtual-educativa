@@ -28,7 +28,7 @@ export function QRScanner({ onScan, onClose }: Props) {
         controls = await reader.decodeFromVideoDevice(
           undefined,
           videoRef.current,
-          (result, err) => {
+          (result) => {
             if (result) {
               onScan(result.getText());
             }

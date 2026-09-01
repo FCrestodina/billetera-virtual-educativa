@@ -34,11 +34,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Informativo por ahora: `npm run lint` sale en rojo con 4 errores de
-      # react-hooks/set-state-in-effect (estado derivado de window.location en
-      # dos paginas, y el patron de fetch-en-effect en otras dos). Arreglarlos
-      # es un refactor, no una tarea de CI. Cuando se arreglen, sacar el
-      # continue-on-error y el lint pasa a gatear como los demas.
-      - name: Lint (informativo, todavia no gatea)
+      # Gatea desde el 2026-09-01, cuando se arreglaron los 4 errores de
+      # react-hooks/set-state-in-effect que lo tenian en rojo. Hoy sale en 0
+      # errores y 0 warnings: cualquier cosa que aparezca es nueva.
+      - name: Lint
         run: npm run lint
-        continue-on-error: true
