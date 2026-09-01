@@ -48,7 +48,7 @@ describe("POST /api/classrooms", () => {
 
   it("rechaza si ya existe un aula activa con ese código", async () => {
     vi.mocked(db.select).mockReturnValueOnce(
-      mockSelect([{ id: "c1", code: "5A", active: true, initialBalance: 1000 }]) as ReturnType<typeof db.select>
+      mockSelect([{ id: "c1", code: "5A", active: true, initialBalance: 1000 }]) as unknown as ReturnType<typeof db.select>
     );
     const req = postRequest(URL, { pin: PIN, code: "5A", initialBalance: "1000" });
     const res = await POST(req);
@@ -58,7 +58,7 @@ describe("POST /api/classrooms", () => {
   it("archiva el aula inactiva en vez de borrarla y reusa el código", async () => {
     let renombrada: { code?: string } | undefined;
     vi.mocked(db.select).mockReturnValueOnce(
-      mockSelect([{ id: "c1", code: "5A", active: false, initialBalance: 500 }]) as ReturnType<typeof db.select>
+      mockSelect([{ id: "c1", code: "5A", active: false, initialBalance: 500 }]) as unknown as ReturnType<typeof db.select>
     );
     vi.mocked(db.update).mockReturnValueOnce({
       set: (v: { code?: string }) => {
@@ -67,7 +67,7 @@ describe("POST /api/classrooms", () => {
       },
     } as unknown as ReturnType<typeof db.update>);
     vi.mocked(db.insert).mockReturnValueOnce(
-      mockInsert([{ id: "c2", code: "5A", active: true, initialBalance: 2000 }]) as ReturnType<typeof db.insert>
+      mockInsert([{ id: "c2", code: "5A", active: true, initialBalance: 2000 }]) as unknown as ReturnType<typeof db.insert>
     );
 
     const req = postRequest(URL, { pin: PIN, code: "5A", initialBalance: "2000" });
@@ -81,9 +81,9 @@ describe("POST /api/classrooms", () => {
   });
 
   it("crea el aula exitosamente", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     vi.mocked(db.insert).mockReturnValueOnce(
-      mockInsert([{ id: "c1", code: "5A", active: true, initialBalance: 1000 }]) as ReturnType<typeof db.insert>
+      mockInsert([{ id: "c1", code: "5A", active: true, initialBalance: 1000 }]) as unknown as ReturnType<typeof db.insert>
     );
     const req = postRequest(URL, { pin: PIN, code: "5A", initialBalance: "1000" });
     const res = await POST(req);
@@ -131,7 +131,7 @@ describe("PATCH /api/classrooms/[code]", () => {
   });
 
   it("devuelve 404 si el aula no existe o está inactiva", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, initialBalance: "5000" }), {
       params,
     });
@@ -139,9 +139,9 @@ describe("PATCH /api/classrooms/[code]", () => {
   });
 
   it("cambia el crédito inicial sin tocar los saldos actuales", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as unknown as ReturnType<typeof db.select>);
     vi.mocked(db.update).mockReturnValueOnce(
-      mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as ReturnType<typeof db.update>
+      mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as unknown as ReturnType<typeof db.update>
     );
 
     const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, initialBalance: "50000" }), {
@@ -156,9 +156,9 @@ describe("PATCH /api/classrooms/[code]", () => {
   });
 
   it("suma un monto a los saldos de los estudiantes del aula", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as unknown as ReturnType<typeof db.select>);
     vi.mocked(db.update).mockReturnValueOnce(
-      mockUpdateReturning([{ id: "s1" }, { id: "s2" }]) as ReturnType<typeof db.update>
+      mockUpdateReturning([{ id: "s1" }, { id: "s2" }]) as unknown as ReturnType<typeof db.update>
     );
 
     const res = await PATCH(patchRequest(PATCH_URL, { pin: PIN, balanceAdjustment: "40000" }), {
@@ -172,12 +172,12 @@ describe("PATCH /api/classrooms/[code]", () => {
   });
 
   it("hace los dos cambios en la misma llamada", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([AULA]) as unknown as ReturnType<typeof db.select>);
     vi.mocked(db.update)
       .mockReturnValueOnce(
-        mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as ReturnType<typeof db.update>
+        mockUpdateReturning([{ ...AULA, initialBalance: 50000 }]) as unknown as ReturnType<typeof db.update>
       )
-      .mockReturnValueOnce(mockUpdateReturning([{ id: "s1" }]) as ReturnType<typeof db.update>);
+      .mockReturnValueOnce(mockUpdateReturning([{ id: "s1" }]) as unknown as ReturnType<typeof db.update>);
 
     const res = await PATCH(
       patchRequest(PATCH_URL, { pin: PIN, initialBalance: "50000", balanceAdjustment: "40000" }),

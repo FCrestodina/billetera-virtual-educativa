@@ -40,14 +40,14 @@ describe("POST /api/payments", () => {
   });
 
   it("rechaza si el estudiante no existe", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     const req = postRequest(URL, { studentId: "no-existe", qrText: qr() });
     const res = await POST(req);
     expect(res.status).toBe(404);
   });
 
   it("rechaza un QR inválido (sin precio)", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([student]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([student]) as unknown as ReturnType<typeof db.select>);
     const req = postRequest(URL, { studentId: "s1", qrText: "comercio=Kiosco" });
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -55,7 +55,7 @@ describe("POST /api/payments", () => {
 
   it("rechaza si el saldo es insuficiente", async () => {
     vi.mocked(db.select).mockReturnValueOnce(
-      mockSelect([{ ...student, balance: 100 }]) as ReturnType<typeof db.select>
+      mockSelect([{ ...student, balance: 100 }]) as unknown as ReturnType<typeof db.select>
     );
     const req = postRequest(URL, { studentId: "s1", qrText: qr({ precio: "5000" }) });
     const res = await POST(req);
@@ -67,9 +67,9 @@ describe("POST /api/payments", () => {
   it("rechaza si ya se alcanzó el tope de usos de la promo", async () => {
     const qrText = qr({ tipo: "descuento", modo: "porcentaje", promo: "10", tope: "1" });
     vi.mocked(db.select)
-      .mockReturnValueOnce(mockSelect([student]) as ReturnType<typeof db.select>)
+      .mockReturnValueOnce(mockSelect([student]) as unknown as ReturnType<typeof db.select>)
       .mockReturnValueOnce(
-        mockSelect([{ id: "u1", studentId: "s1", promoKey: "x", usesCount: 1 }]) as ReturnType<typeof db.select>
+        mockSelect([{ id: "u1", studentId: "s1", promoKey: "x", usesCount: 1 }]) as unknown as ReturnType<typeof db.select>
       );
     const req = postRequest(URL, { studentId: "s1", qrText });
     const res = await POST(req);
@@ -79,8 +79,8 @@ describe("POST /api/payments", () => {
   });
 
   it("procesa un pago exitoso y devuelve el nuevo balance", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([student]) as ReturnType<typeof db.select>);
-    vi.mocked(db.update).mockReturnValueOnce(mockUpdate() as ReturnType<typeof db.update>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([student]) as unknown as ReturnType<typeof db.select>);
+    vi.mocked(db.update).mockReturnValueOnce(mockUpdate() as unknown as ReturnType<typeof db.update>);
     vi.mocked(db.insert).mockReturnValueOnce(
       mockInsert([
         {
@@ -96,7 +96,7 @@ describe("POST /api/payments", () => {
           balanceAfter: 4000,
           promoKey: null,
         },
-      ]) as ReturnType<typeof db.insert>
+      ]) as unknown as ReturnType<typeof db.insert>
     );
     const req = postRequest(URL, { studentId: "s1", qrText: qr() });
     const res = await POST(req);

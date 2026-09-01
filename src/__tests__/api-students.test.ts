@@ -19,14 +19,14 @@ describe("POST /api/students", () => {
   });
 
   it("rechaza si el aula no existe (o no está activa)", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     const req = postRequest(URL, { classroomCode: "9Z", username: "juan", password: "Abc123" });
     const res = await POST(req);
     expect(res.status).toBe(404);
   });
 
   it("rechaza un nombre de usuario vacío", async () => {
-    vi.mocked(db.select).mockReturnValueOnce(mockSelect([classroom]) as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValueOnce(mockSelect([classroom]) as unknown as ReturnType<typeof db.select>);
     const req = postRequest(URL, { classroomCode: "5A", username: "   ", password: "Abc123" });
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -35,11 +35,11 @@ describe("POST /api/students", () => {
   it("rechaza el login con contraseña incorrecta", async () => {
     const hash = hashPassword("Correct1");
     vi.mocked(db.select)
-      .mockReturnValueOnce(mockSelect([classroom]) as ReturnType<typeof db.select>)
+      .mockReturnValueOnce(mockSelect([classroom]) as unknown as ReturnType<typeof db.select>)
       .mockReturnValueOnce(
         mockSelect([
           { id: "s1", classroomId: "c1", username: "juan", passwordHash: hash, avatar: "astronauta", balance: 1000 },
-        ]) as ReturnType<typeof db.select>
+        ]) as unknown as ReturnType<typeof db.select>
       );
     const req = postRequest(URL, { classroomCode: "5A", username: "juan", password: "Wrong1" });
     const res = await POST(req);
@@ -49,11 +49,11 @@ describe("POST /api/students", () => {
   it("permite el login de un usuario existente con la contraseña correcta", async () => {
     const hash = hashPassword("Correct1");
     vi.mocked(db.select)
-      .mockReturnValueOnce(mockSelect([classroom]) as ReturnType<typeof db.select>)
+      .mockReturnValueOnce(mockSelect([classroom]) as unknown as ReturnType<typeof db.select>)
       .mockReturnValueOnce(
         mockSelect([
           { id: "s1", classroomId: "c1", username: "juan", passwordHash: hash, avatar: "astronauta", balance: 1000 },
-        ]) as ReturnType<typeof db.select>
+        ]) as unknown as ReturnType<typeof db.select>
       );
     const req = postRequest(URL, { classroomCode: "5A", username: "juan", password: "Correct1" });
     const res = await POST(req);
@@ -65,8 +65,8 @@ describe("POST /api/students", () => {
 
   it("rechaza el alta de un usuario nuevo con una contraseña que no cumple las reglas", async () => {
     vi.mocked(db.select)
-      .mockReturnValueOnce(mockSelect([classroom]) as ReturnType<typeof db.select>)
-      .mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+      .mockReturnValueOnce(mockSelect([classroom]) as unknown as ReturnType<typeof db.select>)
+      .mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     const req = postRequest(URL, { classroomCode: "5A", username: "nuevo", password: "abc" });
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -75,12 +75,12 @@ describe("POST /api/students", () => {
 
   it("da de alta a un estudiante nuevo con contraseña válida", async () => {
     vi.mocked(db.select)
-      .mockReturnValueOnce(mockSelect([classroom]) as ReturnType<typeof db.select>)
-      .mockReturnValueOnce(mockSelect([]) as ReturnType<typeof db.select>);
+      .mockReturnValueOnce(mockSelect([classroom]) as unknown as ReturnType<typeof db.select>)
+      .mockReturnValueOnce(mockSelect([]) as unknown as ReturnType<typeof db.select>);
     vi.mocked(db.insert).mockReturnValueOnce(
       mockInsert([
         { id: "s2", classroomId: "c1", username: "nuevo", passwordHash: "x", avatar: "astronauta", balance: 1000 },
-      ]) as ReturnType<typeof db.insert>
+      ]) as unknown as ReturnType<typeof db.insert>
     );
     const req = postRequest(URL, { classroomCode: "5A", username: "nuevo", password: "Abc123" });
     const res = await POST(req);
