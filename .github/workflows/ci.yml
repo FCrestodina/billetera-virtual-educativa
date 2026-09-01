@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # El typecheck va explicito y NO se delega al build: el alcance del
+      # typecheck de `next build` es una decision del framework y cambia entre
+      # versiones. El 2026-09-01, el bump a Next 16.3 amplio ese alcance y
+      # destapo 32 errores TS2352 en los mocks de drizzle que llevaban meses
+      # en el repo sin que nada los mirara.
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Informativo por ahora: `npm run lint` sale en rojo con 4 errores de
+      # react-hooks/set-state-in-effect (estado derivado de window.location en
+      # dos paginas, y el patron de fetch-en-effect en otras dos). Arreglarlos
+      # es un refactor, no una tarea de CI. Cuando se arreglen, sacar el
+      # continue-on-error y el lint pasa a gatear como los demas.
+      - name: Lint (informativo, todavia no gatea)
+        run: npm run lint
+        continue-on-error: true
