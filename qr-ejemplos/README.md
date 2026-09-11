@@ -94,6 +94,58 @@ tope=2
 
 ---
 
+## 7. Monto libre con compra mínima — Supermercado
+
+```
+comercio=Supermercado Verde
+producto=Compra
+precio=libre
+promo=20
+modo=porcentaje
+tipo=reintegro
+minimo=100000
+tope_pesos=25000
+```
+
+→ El estudiante escribe el monto al pagar. Con $200.000 el 20% serían $40.000, pero el tope lo corta en $25.000; con $50.000 no llega al mínimo y no hay reintegro.
+
+---
+
+## 8. Llevá 2, pagá 1 — Almacén
+
+```
+comercio=Almacén
+producto=Gaseosa
+precio=3000
+tipo=nxm
+lleva=2
+paga=1
+```
+
+→ El estudiante elige la cantidad: con 2 paga $3.000; con 1 la promo no se aplica. Para "50% en la 2.ª unidad": `tipo=segunda` y `promo=50`.
+
+---
+
+## 9. Reintegro que acredita la docente, solo los viernes
+
+```
+comercio=Mercado Azul
+producto=Compra
+precio=libre
+promo=15
+modo=porcentaje
+tipo=reintegro
+acreditacion=pendiente
+plazo=3
+dias=V
+```
+
+→ El estudiante elige qué día compra; un martes la promo no se aplica. El reintegro queda en «A acreditar» hasta que la docente lo acredita desde el panel. `plazo` solo define la fecha que se muestra.
+
+Otros campos: `promocion` (nombre compartido para el tope en pesos), `modalidad`, `vigencia`, `condiciones` (se muestran, no se controlan). Los QR del Caso 1, 2 y 3 están listos en `/casos`.
+
+---
+
 ## Tips para imprimir
 
 - Tamaño mínimo recomendado: **5x5 cm** por QR.
