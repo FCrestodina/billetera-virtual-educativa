@@ -57,6 +57,18 @@ Abrí [http://localhost:3000](http://localhost:3000).
 npm test
 ```
 
+Los tests de rutas mockean la base, así que no ven errores de SQL. Para eso está la
+prueba de punta a punta, que corre contra el server local y una base Postgres real:
+
+```bash
+npm run dev    # en otra terminal
+npm run e2e
+```
+
+Solo corre contra `localhost` (se niega con cualquier otra dirección, así que no puede
+escribir en producción). No toca aulas ni estudiantes existentes: crea su propia aula
+de prueba y la cierra al terminar. Opcionales: `BASE`, `PIN`, `PREFIJO`.
+
 ## Desplegar en Railway
 
 1. Crear un proyecto en [Railway](https://railway.app).
@@ -66,10 +78,17 @@ npm test
    - `DATABASE_URL` → Railway lo autocompleta si usás el plugin Postgres interno.
    - `TEACHER_PIN` → el PIN que vas a dar a las docentes.
 5. Railway detecta automáticamente el proyecto Next.js y lo despliega.
-6. Antes del primer deploy, ejecutá la migración:
+6. Antes del primer deploy, con la base **vacía**, creá las tablas:
    ```bash
    DATABASE_URL=tu_url npm run db:push
    ```
+
+> ⚠️ **Con datos cargados, no uses `db:push` contra producción.** Contra el Postgres 18
+> de Railway, `drizzle-kit` propuso por error **vaciar la tabla de estudiantes**
+> (`truncate`) para agregar una restricción que ya existía. Para sumar columnas: hacé un
+> backup (`\copy tabla to 'tabla.csv' csv header` por tabla), probá el cambio con
+> `db:push` en una base local, y en producción aplicá solo los `ALTER TABLE … ADD COLUMN`
+> a mano, en una transacción.
 
 ## QR de ejemplo
 
