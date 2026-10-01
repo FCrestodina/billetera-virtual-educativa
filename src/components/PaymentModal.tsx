@@ -252,7 +252,7 @@ export function PaymentModal({
             {limitReached && (
               <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-center">
                 <p className="text-amber-700 font-semibold text-sm">
-                  Alcanzaste el límite de esta promoción.
+                  Alcanzaste el tope de usos de esta promo.
                 </p>
                 <p className="text-amber-600 text-xs mt-1">
                   Podés pagar sin la promo o cancelar.

@@ -102,7 +102,7 @@ Ver [`qr-ejemplos/README.md`](./qr-ejemplos/README.md) para los textos de cada t
 3. El panel docente muestra en tiempo real los estudiantes conectados y sus saldos.
 
 ### Estudiante
-1. Ir a `/estudiante` → ingresar código de aula + apodo + avatar.
+1. Ir a `/estudiante` → ingresar código de aula + usuario + contraseña + avatar.
 2. Accede a la billetera con el saldo inicial.
 3. Toca "Pagar con QR" → escanea → confirma la operación.
 4. El historial registra todos los movimientos.
@@ -116,5 +116,7 @@ Ver [`qr-ejemplos/README.md`](./qr-ejemplos/README.md) para los textos de cada t
 | Descuento monto | Descuenta un monto fijo del precio |
 | Reintegro % | Cobra el precio y devuelve un porcentaje |
 | Reintegro monto | Cobra el precio y devuelve un monto fijo |
+| nxm | "Llevá N, pagá M" (2x1, 3x2); necesita `lleva` y `paga` |
+| Segunda | `promo` % de descuento en cada segunda unidad |
 
-Todos los tipos admiten `tope=N` para limitar usos por estudiante.
+Los tipos con beneficio (todos menos Normal) admiten `tope=N` (tope de usos por estudiante) y `tope_pesos=N` (tope en pesos del beneficio por mes simulado). En un QR Normal el `tope` no cuenta usos.

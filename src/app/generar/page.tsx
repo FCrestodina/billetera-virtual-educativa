@@ -324,7 +324,7 @@ function Generador() {
           )}
 
           <Field label="Tope de usos por estudiante (opcional)">
-            <Numero valor={form.tope} onChange={(v) => set("tope", v)} placeholder="Sin límite" />
+            <Numero valor={form.tope} onChange={(v) => set("tope", v)} placeholder="Sin tope" />
           </Field>
 
           <fieldset className="rounded-2xl border border-gray-200 p-4 space-y-4">

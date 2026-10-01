@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     if (usage && usage.usesCount >= qrData.tope) {
       return NextResponse.json(
-        { error: "Alcanzaste el límite de esta promoción.", limitReached: true, qrData },
+        { error: "Alcanzaste el tope de usos de esta promo.", limitReached: true, qrData },
         { status: 409 }
       );
     }
